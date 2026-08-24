@@ -303,22 +303,6 @@ function App() {
                 }
             ]);
 
-            if (data.data?.forecast) {
-                setForecast({
-                    location: data.data.location,
-                    forecast: data.data.forecast,
-                    source: data.source
-                });
-            }
-
-            if (data.data?.weather) {
-                setCurrent({
-                    location: data.data.location,
-                    weather: data.data.weather,
-                    source: data.source
-                });
-            }
-
         } catch (error) {
             setChat(messages => [
                 ...messages,
@@ -553,7 +537,7 @@ function App() {
                             Wind
 
                             <b>
-                                {wind ?? '—'} km/h
+                                {wind ?? '—'} m/s
                             </b>
                         </span>
 

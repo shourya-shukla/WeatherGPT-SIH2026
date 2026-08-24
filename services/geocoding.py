@@ -9,6 +9,9 @@ API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 def get_coordinates(city: str):
 
+    if not API_KEY:
+        raise RuntimeError("OPENWEATHER_API_KEY is not configured")
+
     url = "https://api.openweathermap.org/geo/1.0/direct"
 
     params = {
@@ -17,7 +20,7 @@ def get_coordinates(city: str):
         "appid": API_KEY
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=15)
     response.raise_for_status()
 
     data = response.json()

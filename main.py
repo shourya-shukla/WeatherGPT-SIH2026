@@ -1,5 +1,9 @@
-from fastapi import FastAPI, APIRouter
+import os
+
+import requests
+from fastapi import FastAPI, APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from services.weather import (
@@ -24,6 +28,15 @@ app = FastAPI(
 
 api = APIRouter(prefix="/api/v1")
 
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
+    if origin.strip()
+]
+
 
 # ============================================================
 # CORS
@@ -31,14 +44,24 @@ api = APIRouter(prefix="/api/v1")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173"
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(requests.RequestException)
+async def upstream_service_error(_: Request, __: requests.RequestException):
+    return JSONResponse(
+        status_code=502,
+        content={"detail": "A weather data provider is temporarily unavailable."}
+    )
+
+
+@app.exception_handler(RuntimeError)
+async def configuration_error(_: Request, error: RuntimeError):
+    return JSONResponse(status_code=503, content={"detail": str(error)})
 
 
 # ============================================================
@@ -75,9 +98,9 @@ def current_weather(location: str):
         }
 
     weather = get_current_weather(
-    coordinates["latitude"],
-    coordinates["longitude"]
-)
+        coordinates["latitude"],
+        coordinates["longitude"]
+    )
 
     return {
         "location": {
@@ -90,7 +113,7 @@ def current_weather(location: str):
                 "temperature_2m": weather["temperature"],
                 "relative_humidity_2m": weather["humidity"],
                 "wind_speed_10m": weather["wind_speed"],
-                "apparent_temperature": weather["temperature"],
+                "apparent_temperature": weather["feels_like"],
                 "condition": weather["condition"]
             }
         },

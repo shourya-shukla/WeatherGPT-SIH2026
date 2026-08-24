@@ -13,7 +13,7 @@ def get_gfs_forecast(lat: float, lon: float, date: str):
         "timezone": "auto"
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=15)
     response.raise_for_status()
 
     data = response.json()
@@ -41,7 +41,7 @@ def get_gfs_forecast(lat: float, lon: float, date: str):
     return {
         "latitude": lat,
         "longitude": lon,
-        "model": "NOAA GFS",
+        "model": "Open-Meteo GFS",
         "date": date,
         "forecast": forecast
     }

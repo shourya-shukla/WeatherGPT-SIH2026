@@ -14,8 +14,6 @@ from services.climate import analyze_climate
 from services.history import get_historical_weather
 
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-
 def get_forecast_tool(city: str, date: str):
     """Gets the weather forecast for a city and date.
 
@@ -26,7 +24,7 @@ def get_forecast_tool(city: str, date: str):
     Returns:
         Weather forecast for the requested date.
     """
-    date = resolve_date(date);
+    date = resolve_date(date)
     location = get_coordinates(city)
 
     if location is None:
@@ -90,7 +88,7 @@ def get_gfs_forecast_tool(city: str, date: str):
     return {
         "city": city,
         "date": date,
-        "model": "NOAA GFS",
+        "model": "Open-Meteo GFS",
         "latitude": data["latitude"],
         "longitude": data["longitude"],
         "minimum_temperature": min(temperatures),
@@ -158,6 +156,12 @@ def get_weather(city: str):
 
 
 def ask_weather_gpt(question: str):
+
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY is not configured")
+
+    client = genai.Client(api_key=api_key)
 
     response = client.models.generate_content(
         model="gemini-3.5-flash-lite",

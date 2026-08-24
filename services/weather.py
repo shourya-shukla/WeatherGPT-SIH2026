@@ -16,6 +16,9 @@ API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 def get_current_weather(lat: float, lon: float):
 
+    if not API_KEY:
+        raise RuntimeError("OPENWEATHER_API_KEY is not configured")
+
     url = "https://api.openweathermap.org/data/2.5/weather"
 
     params = {
@@ -25,7 +28,7 @@ def get_current_weather(lat: float, lon: float):
         "units": "metric"
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=15)
     response.raise_for_status()
 
     data = response.json()
@@ -35,6 +38,7 @@ def get_current_weather(lat: float, lon: float):
         "latitude": lat,
         "longitude": lon,
         "temperature": data["main"]["temp"],
+        "feels_like": data["main"]["feels_like"],
         "humidity": data["main"]["humidity"],
         "condition": data["weather"][0]["description"],
         "wind_speed": data["wind"]["speed"]
@@ -46,6 +50,9 @@ def get_current_weather(lat: float, lon: float):
 # ============================================================
 
 def get_forecast(lat: float, lon: float, date: str):
+
+    if not API_KEY:
+        raise RuntimeError("OPENWEATHER_API_KEY is not configured")
 
     # Resolve relative dates
     today = datetime.now().date()
@@ -75,7 +82,8 @@ def get_forecast(lat: float, lon: float, date: str):
 
     response = requests.get(
         url,
-        params=params
+        params=params,
+        timeout=15
     )
 
     response.raise_for_status()
@@ -128,7 +136,7 @@ def get_7day_forecast(lat: float, lon: float):
         "timezone": "auto"
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=15)
     response.raise_for_status()
 
     data = response.json()

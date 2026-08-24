@@ -1,4 +1,3 @@
-````markdown
 # WeatherGPT — SIH 2026
 
 WeatherGPT is a disaster-management weather intelligence dashboard for India. It combines live weather data from multiple providers with a Gemini-powered conversational weather assistant.
@@ -80,7 +79,7 @@ WeatherGPT/
     └── src/
         ├── main.jsx
         └── style.css
-````
+```
 
 ---
 
@@ -573,5 +572,3 @@ Restart the FastAPI server after changing `.env`.
 **WeatherGPT — Disaster Management Weather Intelligence**
 
 Built for **Smart India Hackathon 2026**.
-
-````
