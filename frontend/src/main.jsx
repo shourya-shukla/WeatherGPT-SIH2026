@@ -31,6 +31,9 @@ const API =
     import.meta.env.VITE_API_URL ||
     'http://localhost:8000/api/v1';
 
+const DEFAULT_LOCATION = 'New Delhi';
+const DEFAULT_QUERY = 'What is the weather in New Delhi?';
+
 
 /* ------------------------------------------------------------
    SOURCE
@@ -159,10 +162,10 @@ function getCurrentWeatherInfo(condition = '') {
 
 function App() {
 
-    const [place, setPlace] = useState('New Delhi');
+    const [place, setPlace] = useState(DEFAULT_LOCATION);
 
     const [query, setQuery] = useState(
-        'What is the weather in New Delhi?'
+        DEFAULT_QUERY
     );
 
     const [current, setCurrent] = useState(null);
@@ -452,6 +455,11 @@ function App() {
 
                     <input
                         value={place}
+                        onFocus={() => {
+                            if (place === DEFAULT_LOCATION) {
+                                setPlace('');
+                            }
+                        }}
                         onChange={event =>
                             setPlace(event.target.value)
                         }
@@ -836,7 +844,7 @@ function App() {
 
                 <div className="messages">
 
-                    {chat.slice(-4).map(
+                    {chat.map(
                         (message, index) => (
 
                             <div
@@ -872,6 +880,11 @@ function App() {
 
                     <input
                         value={query}
+                        onFocus={() => {
+                            if (query === DEFAULT_QUERY) {
+                                setQuery('');
+                            }
+                        }}
                         onChange={event =>
                             setQuery(event.target.value)
                         }

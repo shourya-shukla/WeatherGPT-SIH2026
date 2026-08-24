@@ -421,11 +421,31 @@ h1 em {
 }
 
 .messages {
-    min-height: 102px;
+    height: 280px;
     margin-top: 18px;
     display: flex;
     flex-direction: column;
-    gap: 10px
+    gap: 10px;
+    overflow-y: auto;
+    padding-right: 8px
+}
+
+.messages::-webkit-scrollbar {
+    width: 8px
+}
+
+.messages::-webkit-scrollbar-track {
+    background: #ffffff0a;
+    border-radius: 8px
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: #78979d;
+    border-radius: 8px
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+    background: #9bbbc0
 }
 
 .messages>div {
